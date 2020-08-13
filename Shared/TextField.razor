@@ -1,0 +1,16 @@
+<h2>This it the Search</h2>
+<input type="text"  value="@TextInput" @oninput="@ChangeTest"/>
+<br/>
+Text Input: @TextInput
+
+@code {
+    private string TextInput { get; set; }
+    
+    private void ChangeTest(ChangeEventArgs args)
+    {
+
+TextInput = args.Value.ToString();
+          Console.WriteLine(TextInput);
+    }
+
+}

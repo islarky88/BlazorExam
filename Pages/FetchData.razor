@@ -26,7 +26,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in dataObj)
+            @* @foreach (var item in dataObj)
             {
                 <tr>
                     <td>@item.userId</td>
@@ -35,7 +35,7 @@ else
                     <td>@item.completed</td>
            
                 </tr>
-            }
+            } *@
         </tbody>
     </table>
 }
@@ -43,14 +43,13 @@ else
 @code {
     private WeatherForecast[] forecasts;
 
-    private PokeItem[] pokeItem;
-    private Todos[] dataObj;
+
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-
-
+ForecastService.HelloWorld();
+@* 
    //Define your base url
       string baseURL = $"https://jsonplaceholder.typicode.com/todos";
       //Have your api call in try/catch block.
@@ -90,7 +89,7 @@ var list = JsonConvert.DeserializeObject<List<Todos>>(data);
               }
             }
           }
-        }
+        } *@
 
 
     }
