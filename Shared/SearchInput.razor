@@ -1,0 +1,13 @@
+<h2>This it the Search</h2>
+<input type="text"  @oninput="ChangeTest"/>
+<br/>
+Text Input: @TextInput
+
+@code {
+    private string TextInput { get; set; }
+    
+    private void ChangeTest()
+    {
+        TextInput = "ewq";
+    }
+}
