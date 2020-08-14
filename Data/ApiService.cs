@@ -6,19 +6,7 @@ using Newtonsoft.Json.Linq;
 namespace BlazorExam.Data
 {
 
-
-  public class PokeItem
-  {
-    //Define the constructor of your PokeItem which is the same name as class, and is not returning anything.
-    //Will take a string name, and url as a argument.
-    public PokeItem(string name, string url)
-    {
-      Name = name;
-    }
-    //Your Properties are auto-implemented.
-    public string Name { get; set; }
-  }
-  public class PokemonService
+  public class ApiService
   {
    
     public static async Task<string> GetDataFromUrl(string url)
@@ -42,14 +30,8 @@ namespace BlazorExam.Data
               if (data != null)
               {
 
-      
-
                 return data;
-                //Then create a new instance of PokeItem, and string interpolate your name property to your JSON object.
-                //Which will convert it to a string, since each property value is a instance of JToken.
-                // PokeItem pokeItem = new PokeItem(name: $"{dataObj["name"]}");
-                //Log your pokeItem's name to the Console.
-                // Console.WriteLine("Pokemon Name:");
+
               }
               else
               {
@@ -107,6 +89,18 @@ namespace BlazorExam.Data
       }
     }
 
+
+    public class PokeItem
+    {
+      //Define the constructor of your PokeItem which is the same name as class, and is not returning anything.
+      //Will take a string name, and url as a argument.
+      public PokeItem(string name, string url)
+      {
+        Name = name;
+      }
+      //Your Properties are auto-implemented.
+      public string Name { get; set; }
+    }
 
     public static async void GetOnePokemon(int pokeId)
     {

@@ -2,6 +2,7 @@
 
 @using BlazorExam.Data
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.Components.Web
 @inject WeatherForecastService ForecastService
 
 @inject IJSRuntime jsRuntime
@@ -39,7 +40,7 @@
         <tbody>
             @foreach (var item in data)
             {
-                <tr>
+                <tr class="pointer" @onclick="@(e => SaveItem(item))">
                     <td>@item.Id</td>
                     <td>@item.Title</td>
                 </tr>
@@ -49,7 +50,7 @@
 @code {
   private WeatherForecast[] forecasts;
 
-  List<Person> data = new List<Person>();
+  List<JsonData> data = new List<JsonData>();
   string radioValue = "";
 
   List<ApiUrls> myApiUrls = new List<ApiUrls>
@@ -61,20 +62,33 @@
 
     string message = "";
 
+
+
+  private async Task SaveItem(JsonData test)
+  {
+
+    var str = String.Join(",", test);
+
+    Console.WriteLine(test.Title);
+
+      var value = myApiUrls.First(item => item.url == radioValue).name;
+
+
+      @* await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", "test", data); *@
+      await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", value, test);
+  }
   private async Task ShowAlert()
   {
       @* await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", "test", data); *@
       await jsRuntime.InvokeVoidAsync("ShowAlert", message);
   }
-  public class Person
+  private class JsonData
   {
     public int Id { get; set; }
     public string Title { get; set; }
-  }
-
-  public class RootObject
-  {
-    public List<Person> People { get; set; }
+    public int UserId { get; set; }
+    public string Body { get; set; }
+    public bool Completed { get; set; }
   }
 
   class ApiUrls
@@ -85,15 +99,14 @@
 
   async void RadioSelection(ChangeEventArgs args)
   {
-    await ShowAlert();
 
     radioValue = args.Value.ToString();
     if (radioValue == "")
     {
       return;
     }
-    var response = await PokemonService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<Person>>(response);
+    var response = await ApiService.GetDataFromUrl(radioValue);
+    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
 
   }
@@ -106,8 +119,8 @@
       return;
     }
 
-    var response = await PokemonService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<Person>>(response);
+    var response = await ApiService.GetDataFromUrl(radioValue);
+    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
 
   }
@@ -115,8 +128,8 @@
   private async void FetchData()
   {
 
-    var response = await PokemonService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<Person>>(response);
+    var response = await ApiService.GetDataFromUrl(radioValue);
+    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
 
     Console.WriteLine("this is the response from API {0}", response);
