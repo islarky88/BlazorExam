@@ -1,0 +1,105 @@
+﻿@page "/search"
+
+@using BlazorExam.Data
+@using Newtonsoft.Json
+@inject WeatherForecastService ForecastService
+
+<h1>Search</h1>
+
+<TextField OnTextInput="TextInputHandler" />
+<div class="d-flex flex-row mt-5">
+  @foreach (var item in myApiUrls)
+  {
+  <div class="mr-4">
+    <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
+    <label for="@item.name">@item.name</label>
+  </div>
+  }
+</div>
+
+
+<div>
+  <label>Current URL for fetching: <span class="text-bold">@radioValue</span></label>
+</div>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in data)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+@code {
+  private WeatherForecast[] forecasts;
+
+  List<Person> data = new List<Person>();
+  string radioValue = "aspnetcore";
+
+  List<ApiUrls> myApiUrls = new List<ApiUrls> 
+  {
+    new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
+    new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
+    new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
+  };
+  public class Person
+  {
+    public int Id { get; set; }
+    public string Title { get; set; }
+  }
+
+  public class RootObject
+  {
+    public List<Person> People { get; set; }
+  }
+
+  class ApiUrls
+    {
+    public string name { get; set; }
+    public string url { get; set; }
+  }
+  
+  void RadioSelection(ChangeEventArgs args)
+  {
+
+    radioValue = args.Value.ToString();
+      Console.WriteLine(radioValue);
+  }
+  
+  async void TextInputHandler(string newMessage)
+  {
+
+      FetchData();
+
+      Console.WriteLine("this is the input from TextField {0}", radioValue);
+
+
+      Console.WriteLine("this is the response from API {0}", test);
+
+  }
+
+  private async void FetchData()
+  {
+
+      var response = await PokemonService.GetDataFromUrl(radioValue);
+      data = JsonConvert.DeserializeObject<List<Person>>(response);
+      StateHasChanged();
+
+      Console.WriteLine("this is the response from API {0}", test);
+
+  }
+}

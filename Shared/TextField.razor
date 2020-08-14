@@ -1,16 +1,24 @@
-<h2>This it the Search</h2>
-<input type="text"  value="@TextInput" @oninput="@ChangeTest"/>
-<br/>
-Text Input: @TextInput
+
+
+<div class="d-flex flex-row">
+    <div><input type="text"  value="@TextInput" @oninput="@ChangeTest"/></div>
+    <div class="ml-4">Text Input: @TextInput</div>
+</div>
+
 
 @code {
+
+    [Parameter]
+    public EventCallback<string> OnTextInput { get; set; }
+
     private string TextInput { get; set; }
-    
+
     private void ChangeTest(ChangeEventArgs args)
     {
 
-TextInput = args.Value.ToString();
-          Console.WriteLine(TextInput);
+        TextInput = args.Value.ToString();
+        OnTextInput.InvokeAsync(TextInput);
+        Console.WriteLine(TextInput);
     }
 
 }
