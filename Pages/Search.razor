@@ -3,7 +3,6 @@
 @using BlazorExam.Data
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Components.Web
-@inject WeatherForecastService ForecastService
 
 @inject IJSRuntime jsRuntime
 
@@ -27,8 +26,6 @@
 </div>
 }
 
-
-
     <table class="table">
         <thead>
             <tr>
@@ -48,91 +45,52 @@
         </tbody>
     </table>
 @code {
-  private WeatherForecast[] forecasts;
 
   List<JsonData> data = new List<JsonData>();
-  string radioValue = "";
+  private string radioValue;
+
+  
 
   List<ApiUrls> myApiUrls = new List<ApiUrls>
   {
-  new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
-  new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
-  new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
+    new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
+    new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
+    new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
   };
 
-    string message = "";
 
-
-
-  private async Task SaveItem(JsonData test)
+  private async Task SaveItem(JsonData item)
   {
 
-    var str = String.Join(",", test);
+    var urlName = myApiUrls.First(item => item.url == radioValue).name;
+    await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", urlName, item);
 
-    Console.WriteLine(test.Title);
-
-      var value = myApiUrls.First(item => item.url == radioValue).name;
-
-
-      @* await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", "test", data); *@
-      await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", value, test);
-  }
-  private async Task ShowAlert()
-  {
-      @* await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", "test", data); *@
-      await jsRuntime.InvokeVoidAsync("ShowAlert", message);
-  }
-  private class JsonData
-  {
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public int UserId { get; set; }
-    public string Body { get; set; }
-    public bool Completed { get; set; }
   }
 
-  class ApiUrls
-  {
-    public string name { get; set; }
-    public string url { get; set; }
-  }
-
-  async void RadioSelection(ChangeEventArgs args)
+  private async Task RadioSelection(ChangeEventArgs args)
   {
 
     radioValue = args.Value.ToString();
-    if (radioValue == "")
-    {
-      return;
-    }
-    var response = await ApiService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
-    StateHasChanged();
+
+    await FetchData();
 
   }
 
-  private async void TextInputHandler(string newMessage)
+  private async Task TextInputHandler(string newMessage)
   {
 
-    if (radioValue == "")
-    {
-      return;
-    }
-
-    var response = await ApiService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
-    StateHasChanged();
+    await FetchData();
 
   }
 
-  private async void FetchData()
+  private async Task FetchData()
   {
+
+    if (radioValue == null) return;
 
     var response = await ApiService.GetDataFromUrl(radioValue);
     data = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
-
-    Console.WriteLine("this is the response from API {0}", response);
 
   }
 }    

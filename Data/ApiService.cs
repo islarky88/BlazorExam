@@ -5,6 +5,23 @@ using Newtonsoft.Json.Linq;
 
 namespace BlazorExam.Data
 {
+  
+  public class ApiUrls
+  {
+    public string name { get; set; }
+    public string url { get; set; }
+  }
+
+  
+  public class JsonData
+  {
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public int UserId { get; set; }
+    public string Body { get; set; }
+    public bool Completed { get; set; }
+  }
+ 
 
   public class ApiService
   {
