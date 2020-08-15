@@ -28,7 +28,6 @@ namespace BlazorExam
     {
       services.AddRazorPages();
       services.AddServerSideBlazor();
-      services.AddSingleton<WeatherForecastService>();
 
     }
 
