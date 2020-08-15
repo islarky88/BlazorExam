@@ -6,42 +6,58 @@
 @inject IJSRuntime jsRuntime
 
 
-
 <h1>Saved Items</h1>
-
 
     <table class="table">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Temp. (C)</th>
             </tr>
         </thead>
         <tbody>
-            @* @foreach (var item in dataObj)
+            @foreach (var item in data)
             {
-                <tr>
-                    <td>@item.userId</td>
-                    <td>@item.id</td>
-                    <td>@item.title</td>
-                    <td>@item.completed</td>
-           
+                <tr class="pointer">
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.UserId</td>
                 </tr>
-            } *@
+            }
         </tbody>
     </table>
 
 
 @code {
 
-    protected override async Task OnInitializedAsync()
+    List<JsonData> data = new List<JsonData>();
+
+    private async Task FetchSavedData(string type) 
+    {
+      
+        var response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
+
+        Console.WriteLine(response);
+
+        data = JsonConvert.DeserializeObject<List<JsonData>>(response);
+
+          Console.WriteLine(data);
+
+
+        Console.WriteLine("hello from list mounted");
+        StateHasChanged();
+      
+    } 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
+      if (firstRender)
+      {
 
-        await jsRuntime.InvokeVoidAsync("ShowAlert", "asdasd");
-    
-        Console.WriteLine("hello from list mounted");
+        await FetchSavedData("Todos");
+
+      }
     }
 }

@@ -1,5 +1,3 @@
-﻿@page "/search"
-
 @using BlazorExam.Data
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Components.Web
@@ -7,26 +5,18 @@
 @inject IJSRuntime jsRuntime
 
 
-<h1>Search</h1>
-
-
-<div class="row">
-  <div class="col-12 col-sm-6">
-    <TextField Placeholder="@placeholderValue" OnTextInput="TextInputHandler" />
+<div class="d-flex flex-row mt-5">
+  @foreach (var item in myApiUrls)
+  {
+  <div class="mr-4">
+    <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
+    <label for="@item.name">@item.name</label>
   </div>
-  <div class="col-12 col-sm-6 d-flex flex-column">
-    @foreach (var item in myApiUrls)
-    {
-    <div class="mr-4">
-      <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
-      <label for="@item.name">@item.name</label>
-    </div>
-    }
-  </div>
+  }
 </div>
 
 @if (radioValue != null) {
-<div class="mb-3">
+<div>
   Current URL for fetching: <span class="text-bold">@radioValue</span>
 </div>
 }
@@ -35,6 +25,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Title</th>
                 <th>Title</th>
 
             </tr>
@@ -45,6 +36,7 @@
                 <tr class="pointer" @onclick="@(e => SaveItem(item))">
                     <td>@item.Id</td>
                     <td>@item.Title</td>
+                    <td>@item.Body</td>
                 </tr>
             }
         </tbody>
@@ -53,8 +45,6 @@
 
   List<JsonData> data = new List<JsonData>();
   private string radioValue;
-
-  private string placeholderValue = "Please input your search query...";
 
   
 

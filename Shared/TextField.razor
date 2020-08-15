@@ -1,15 +1,15 @@
 
 
-<div class="d-flex flex-row">
-    <div><input type="text"  value="@TextInput" @oninput="@ChangeTest"/></div>
-    <div class="ml-4">Text Input: @TextInput</div>
+<div>
+    <div><input placeholder="@Placeholder" type="text"  value="@TextInput" @oninput="@ChangeTest"/></div>
+    <div class="mt-4">Input: @TextInput</div>
 </div>
 
 
 @code {
 
-    [Parameter]
-    public EventCallback<string> OnTextInput { get; set; }
+    [Parameter] public EventCallback<string> OnTextInput { get; set; }
+    [Parameter] public string Placeholder { get; set; }
 
     private string TextInput { get; set; }
 
