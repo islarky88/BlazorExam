@@ -8,30 +8,14 @@
 
 <h1>Saved Items</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (C)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var Item in Data)
-            {
-                <tr class="pointer">
-                    <td>@Item.Id</td>
-                    <td>@Item.Title</td>
-                    <td>@Item.UserId</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<SavedItems Source="Todos"/>
+
 
 
 @code {
 
-    List<JsonData> Data = new List<JsonData>();
+    List<JsonData> ApiData = new List<JsonData>();
 
     private async Task FetchSavedData(string Type) 
     {
@@ -40,9 +24,9 @@
 
         Console.WriteLine(Response);
 
-        Data = JsonConvert.DeserializeObject<List<JsonData>>(Response);
+        ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
 
-          Console.WriteLine(Data);
+          Console.WriteLine(ApiData);
 
 
         Console.WriteLine("hello from list mounted");

@@ -4,90 +4,59 @@
 
 @inject IJSRuntime jsRuntime
 
+<h3>Saved Items from: @Source</h3>
 
-<div class="d-flex flex-row mt-5">
-    @foreach (var item in myApiUrls)
-    {
-        <div class="mr-4">
-            <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
-            <label for="@item.name">@item.name</label>
-        </div>
-    }
-</div>
-
-@if (radioValue != null) {
-<div>
-  Current URL for fetching: <span class="text-bold">@radioValue</span>
-</div>
-}
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Title</th>
-
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Temp. (C)</th>
+            <th>Temp. (C)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Item in ApiData)
+        {
+            <tr class="pointer">
+                <td>@Item.Id</td>
+                <td>@Item.Title</td>
+                <td>@Item.UserId</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in data)
-            {
-                <tr class="pointer" @onclick="@(e => SaveItem(item))">
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>@item.Body</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
+
 @code {
 
-  List<JsonData> data = new List<JsonData>();
-  private string radioValue;
+    List<JsonData> ApiData = new List<JsonData>();
 
-  
+    [Parameter] public string Source { get; set; }
 
-  List<ApiUrls> myApiUrls = new List<ApiUrls>
-  {
-    new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
-    new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
-    new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
-  };
+    private async Task FetchSavedData(string Type) 
+    {
+    
+        var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", Type);
+
+        Console.WriteLine(Response);
+
+        ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
+
+        Console.WriteLine(ApiData);
 
 
-  private async Task SaveItem(JsonData item)
-  {
+        Console.WriteLine("hello from list mounted");
+        StateHasChanged();
+    
+    } 
 
-    var urlName = myApiUrls.First(item => item.url == radioValue).name;
-    await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", urlName, item);
+    protected override async Task OnAfterRenderAsync(bool FirstRender)
+    {
 
-  }
+      if (FirstRender)
+      {
 
-  private async Task RadioSelection(ChangeEventArgs args)
-  {
+        await FetchSavedData(Source);
 
-    radioValue = args.Value.ToString();
-
-    await FetchData();
-
-  }
-
-  private async Task TextInputHandler(string newMessage)
-  {
-
-    await FetchData();
-
-  }
-
-  private async Task FetchData()
-  {
-
-    if (radioValue == null) return;
-
-    var response = await ApiService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
-    StateHasChanged();
-
-  }
+      }
+    }
 }    

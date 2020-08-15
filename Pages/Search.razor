@@ -19,7 +19,7 @@
     {
     <div class="mr-4">
       <input type="radio" name="technology" id="@Item.name" value="@Item.url"  @oninput="@RadioSelection" />
-      <label for="@Item.name">@Item.name</label>
+      <label class="pointer" for="@Item.name">@Item.name</label>
     </div>
     }
   </div>
@@ -40,7 +40,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var Item in Data)
+            @foreach (var Item in ApiData)
             {
                 <tr class="pointer" @onclick="@(e => SaveItem(Item))">
                     <td>@Item.Id</td>
@@ -51,19 +51,14 @@
     </table>
 @code {
 
-  List<JsonData> Data = new List<JsonData>();
+  List<JsonData> ApiData = new List<JsonData>();
   private string RadioValue;
 
   private string PlaceholderText = "Search query...";
 
   
 
-  List<ApiUrls> MyApiUrls = new List<ApiUrls>
-  {
-    new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
-    new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
-    new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
-  };
+  List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
 
   private async Task SaveItem(JsonData Item)
@@ -96,7 +91,7 @@
     if (RadioValue == null) return;
 
     var response = await ApiService.GetDataFromUrl(RadioValue);
-    Data = JsonConvert.DeserializeObject<List<JsonData>>(response);
+    ApiData = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
 
   }

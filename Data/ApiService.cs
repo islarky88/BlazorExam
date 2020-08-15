@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace BlazorExam.Data
 {
+  
+
+
   
   public class ApiUrls
   {
@@ -25,6 +29,12 @@ namespace BlazorExam.Data
 
   public class ApiService
   {
+    public static List<ApiUrls> MyApiUrls = new List<ApiUrls>
+    {
+      new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
+      new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
+      new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
+    };
    
     public static async Task<string> GetDataFromUrl(string url)
     {
