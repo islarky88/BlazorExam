@@ -6,13 +6,13 @@
 
 
 <div class="d-flex flex-row mt-5">
-  @foreach (var item in myApiUrls)
-  {
-  <div class="mr-4">
-    <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
-    <label for="@item.name">@item.name</label>
-  </div>
-  }
+    @foreach (var item in myApiUrls)
+    {
+        <div class="mr-4">
+            <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
+            <label for="@item.name">@item.name</label>
+        </div>
+    }
 </div>
 
 @if (radioValue != null) {

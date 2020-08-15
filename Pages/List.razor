@@ -17,12 +17,12 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in data)
+            @foreach (var Item in Data)
             {
                 <tr class="pointer">
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>@item.UserId</td>
+                    <td>@Item.Id</td>
+                    <td>@Item.Title</td>
+                    <td>@Item.UserId</td>
                 </tr>
             }
         </tbody>
@@ -31,18 +31,18 @@
 
 @code {
 
-    List<JsonData> data = new List<JsonData>();
+    List<JsonData> Data = new List<JsonData>();
 
-    private async Task FetchSavedData(string type) 
+    private async Task FetchSavedData(string Type) 
     {
       
-        var response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
+        var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
 
-        Console.WriteLine(response);
+        Console.WriteLine(Response);
 
-        data = JsonConvert.DeserializeObject<List<JsonData>>(response);
+        Data = JsonConvert.DeserializeObject<List<JsonData>>(Response);
 
-          Console.WriteLine(data);
+          Console.WriteLine(Data);
 
 
         Console.WriteLine("hello from list mounted");
@@ -50,10 +50,10 @@
       
     } 
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool FirstRender)
     {
 
-      if (firstRender)
+      if (FirstRender)
       {
 
         await FetchSavedData("Todos");

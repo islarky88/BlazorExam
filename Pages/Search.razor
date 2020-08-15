@@ -4,7 +4,7 @@
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Components.Web
 
-@inject IJSRuntime jsRuntime
+@inject IJSRuntime JsRuntime
 
 
 <h1>Search</h1>
@@ -12,22 +12,22 @@
 
 <div class="row">
   <div class="col-12 col-sm-6">
-    <TextField Placeholder="@placeholderValue" OnTextInput="TextInputHandler" />
+    <TextField Placeholder="@PlaceholderText" OnTextInput="TextInputHandler" />
   </div>
   <div class="col-12 col-sm-6 d-flex flex-column">
-    @foreach (var item in myApiUrls)
+    @foreach (var Item in MyApiUrls)
     {
     <div class="mr-4">
-      <input type="radio" name="technology" id="@item.name" value="@item.url"  @oninput="@RadioSelection" />
-      <label for="@item.name">@item.name</label>
+      <input type="radio" name="technology" id="@Item.name" value="@Item.url"  @oninput="@RadioSelection" />
+      <label for="@Item.name">@Item.name</label>
     </div>
     }
   </div>
 </div>
 
-@if (radioValue != null) {
+@if (RadioValue != null) {
 <div class="mb-3">
-  Current URL for fetching: <span class="text-bold">@radioValue</span>
+  Current URL for fetching: <span class="text-bold">@RadioValue</span>
 </div>
 }
 
@@ -40,25 +40,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in data)
+            @foreach (var Item in Data)
             {
-                <tr class="pointer" @onclick="@(e => SaveItem(item))">
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
+                <tr class="pointer" @onclick="@(e => SaveItem(Item))">
+                    <td>@Item.Id</td>
+                    <td>@Item.Title</td>
                 </tr>
             }
         </tbody>
     </table>
 @code {
 
-  List<JsonData> data = new List<JsonData>();
-  private string radioValue;
+  List<JsonData> Data = new List<JsonData>();
+  private string RadioValue;
 
-  private string placeholderValue = "Please input your search query...";
+  private string PlaceholderText = "Search query...";
 
   
 
-  List<ApiUrls> myApiUrls = new List<ApiUrls>
+  List<ApiUrls> MyApiUrls = new List<ApiUrls>
   {
     new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
     new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
@@ -66,18 +66,18 @@
   };
 
 
-  private async Task SaveItem(JsonData item)
+  private async Task SaveItem(JsonData Item)
   {
 
-    var urlName = myApiUrls.First(item => item.url == radioValue).name;
-    await jsRuntime.InvokeVoidAsync("SaveToLocalStorage", urlName, item);
+    var UrlName = MyApiUrls.First(Item => Item.url == RadioValue).name;
+    await JsRuntime.InvokeVoidAsync("SaveToLocalStorage", UrlName, Item);
 
   }
 
-  private async Task RadioSelection(ChangeEventArgs args)
+  private async Task RadioSelection(ChangeEventArgs Args)
   {
 
-    radioValue = args.Value.ToString();
+    RadioValue = Args.Value.ToString();
 
     await FetchData();
 
@@ -93,10 +93,10 @@
   private async Task FetchData()
   {
 
-    if (radioValue == null) return;
+    if (RadioValue == null) return;
 
-    var response = await ApiService.GetDataFromUrl(radioValue);
-    data = JsonConvert.DeserializeObject<List<JsonData>>(response);
+    var response = await ApiService.GetDataFromUrl(RadioValue);
+    Data = JsonConvert.DeserializeObject<List<JsonData>>(response);
     StateHasChanged();
 
   }
