@@ -31,24 +31,24 @@
 </div>
 }
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
+<table class="table">
+  <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+      </tr>
+  </thead>
+  <tbody>
+    @foreach (var Item in ApiData)
+    {
+      <tr class="pointer" @onclick="@(e => SaveItem(Item))">
+        <td>@Item.Id</td>
+        <td>@Item.Title</td>
+      </tr>
+    }
+  </tbody>
+</table>
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var Item in ApiData)
-            {
-                <tr class="pointer" @onclick="@(e => SaveItem(Item))">
-                    <td>@Item.Id</td>
-                    <td>@Item.Title</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 @code {
 
   List<JsonData> ApiData = new List<JsonData>();

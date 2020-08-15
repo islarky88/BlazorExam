@@ -10,21 +10,21 @@
 <h5 class="mt-3 mb-3">Click on an item to remove it from from local storage</h5>
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Title</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var Item in ApiData)
-        {
-            <tr class="pointer" @onclick="@(e => DeleteItem(Item))">
-                <td>@Item.Id</td>
-                <td>@Item.Title</td>
-            </tr>
-        }
-    </tbody>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var Item in ApiData)
+    {
+      <tr class="pointer" @onclick="@(e => DeleteItem(Item))">
+        <td>@Item.Id</td>
+        <td>@Item.Title</td>
+      </tr>
+    }
+  </tbody>
 </table>
 
 @code {
