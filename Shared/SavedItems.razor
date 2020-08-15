@@ -6,12 +6,14 @@
 
 <h3>Saved Items from: @Source</h3>
 
+
+<h5 class="mt-3 mb-3">Click on an item to remove it from from local storage</h5>
+
 <table class="table">
     <thead>
         <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (C)</th>
+            <th>Id</th>
+            <th>Title</th>
         </tr>
     </thead>
     <tbody>
@@ -20,7 +22,6 @@
             <tr class="pointer" @onclick="@(e => DeleteItem(Item))">
                 <td>@Item.Id</td>
                 <td>@Item.Title</td>
-                <td>@Item.UserId</td>
             </tr>
         }
     </tbody>
@@ -28,18 +29,20 @@
 
 @code {
 
+  [Parameter] public string Source { get; set; }
+
   List<JsonData> ApiData = new List<JsonData>();
 
-  [Parameter] public string Source { get; set; }
+  List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
   private async Task DeleteItem(JsonData Item)
   {
 
     try
     {
-      var ApiType = ApiService.MyApiUrls.First(Item => Item.url == Source).name;
-      Console.WriteLine("asdasd {0}", ApiType);
-      await JsRuntime.InvokeVoidAsync("DeleteSavedItems", ApiType, Item);
+      await JsRuntime.InvokeVoidAsync("DeleteSavedItem", Source, Item);
+
+      await FetchSavedData(Source);
 
     }
     catch (Exception exception)
@@ -79,7 +82,8 @@
     {
       if (FirstRender)
       {
-        await FetchSavedData("Albums");
+        // initial load for loading data from localstorage
+        await FetchSavedData(Source);
       }
         
     }

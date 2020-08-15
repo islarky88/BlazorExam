@@ -19,7 +19,28 @@
 </div>
 
 
-<SavedItems Source="@Type"/>
+@if (Type == "Todos")
+{
+  <SavedItems Source="Todos"/>
+}
+else if (Type == "Albums") 
+{
+  <SavedItems Source="Albums"/>
+
+}
+else if (Type == "Posts") 
+{
+  <SavedItems Source="Posts"/>
+
+} else {
+  <div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Please Select Source</h1>
+    <p class="lead">You will then see the list of items saved by source.</p>
+  </div>
+</div>
+}
+
 
 @code {
 

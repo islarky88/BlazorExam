@@ -13,25 +13,31 @@ window['FetchSavedItems'] = (type) => {
     }
     return JSON.stringify(data);
 };
-window['DeleteSavedItem'] = (type, message) => {
+window['DeleteSavedItem'] = (type, item) => {
     let data = [];
+    console.log('delete item', type, item);
     // cgeck if there is already and entry
     if (localStorage.getItem(type)) {
+        console.log('delete item found');
         data = JSON.parse(localStorage.getItem(type));
-        data = data.filter(item => item.id !== message.id);
+        data = data.filter(i => i.id !== item.id);
     }
+    // update localstage with delete item from list
+    localStorage.setItem(type, JSON.stringify(data));
 };
-window['SaveToLocalStorage'] = (type, message) => {
+window['SaveToLocalStorage'] = (type, item) => {
     let data = [];
     // cgeck if there is already and entry
     if (localStorage.getItem(type)) {
         data = JSON.parse(localStorage.getItem(type));
     }
-    const index = data.findIndex(item => item.id === message.id);
-    // add only items that are not yet saved
-    if (index === -1) {
-        data.push(message);
+    const index = data.findIndex(i => i.id === item.id);
+    // show alert if already saved
+    if (index >= 0) {
+        alert('Item already saved.');
+        return;
     }
     // finally save to localstorage
+    data.push(item);
     localStorage.setItem(type, JSON.stringify(data));
 };
