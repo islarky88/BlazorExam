@@ -63,9 +63,17 @@
 
   private async Task SaveItem(JsonData Item)
   {
+    try
+    {
+      var UrlName = MyApiUrls.First(Item => Item.url == RadioValue).name;
+      await JsRuntime.InvokeVoidAsync("SaveToLocalStorage", UrlName, Item);
+    }
+      catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
 
-    var UrlName = MyApiUrls.First(Item => Item.url == RadioValue).name;
-    await JsRuntime.InvokeVoidAsync("SaveToLocalStorage", UrlName, Item);
 
   }
 

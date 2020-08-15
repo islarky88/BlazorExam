@@ -13,6 +13,14 @@ window['FetchSavedItems'] = (type) => {
     }
     return JSON.stringify(data);
 };
+window['DeleteSavedItem'] = (type, message) => {
+    let data = [];
+    // cgeck if there is already and entry
+    if (localStorage.getItem(type)) {
+        data = JSON.parse(localStorage.getItem(type));
+        data = data.filter(item => item.id !== message.id);
+    }
+};
 window['SaveToLocalStorage'] = (type, message) => {
     let data = [];
     // cgeck if there is already and entry
@@ -20,11 +28,10 @@ window['SaveToLocalStorage'] = (type, message) => {
         data = JSON.parse(localStorage.getItem(type));
     }
     const index = data.findIndex(item => item.id === message.id);
-    if (index >= 0) {
-        data.splice(index, 1);
-    }
-    else {
+    // add only items that are not yet saved
+    if (index === -1) {
         data.push(message);
     }
+    // finally save to localstorage
     localStorage.setItem(type, JSON.stringify(data));
 };

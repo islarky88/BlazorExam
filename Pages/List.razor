@@ -8,40 +8,62 @@
 
 <h1>Saved Items</h1>
 
+<div class="d-flex flex-row">
+@foreach (var Item in MyApiUrls)
+{
+  <div class="mr-4">
+    <input type="radio" name="technology" id="@Item.name" value="@Item.name"  @oninput="@ChangeSource" />
+    <label class="pointer" for="@Item.name">@Item.name</label>
+  </div>
+}
+</div>
 
-<SavedItems Source="Todos"/>
 
-
+<SavedItems Source="@Type"/>
 
 @code {
 
-    List<JsonData> ApiData = new List<JsonData>();
+  private string Type;
+  private List<JsonData> ApiData = new List<JsonData>();
 
-    private async Task FetchSavedData(string Type) 
+  private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
+
+  
+  private void ChangeSource(ChangeEventArgs Args)
+  {
+    Type = Args.Value.ToString();
+  }
+
+  private async Task FetchSavedData(string Type) 
+  {
+    try
     {
-      
-        var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
+      var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
 
-        Console.WriteLine(Response);
+      Console.WriteLine(Response);
 
-        ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
+      ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
 
-          Console.WriteLine(ApiData);
+      Console.WriteLine(ApiData);
 
-
-        Console.WriteLine("hello from list mounted");
-        StateHasChanged();
-      
-    } 
-
-    protected override async Task OnAfterRenderAsync(bool FirstRender)
-    {
-
-      if (FirstRender)
-      {
-
-        await FetchSavedData("Todos");
-
-      }
+      Console.WriteLine("hello from list mounted");
+      StateHasChanged();
     }
+    catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+
+    
+  } 
+
+  protected override async Task OnAfterRenderAsync(bool FirstRender)
+  {
+
+    if (FirstRender)
+    {
+      await FetchSavedData("Todos");
+    }
+  }
 }

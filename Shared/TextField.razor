@@ -10,17 +10,17 @@
 
 @code {
 
-    [Parameter] public EventCallback<string> OnTextInput { get; set; }
-    [Parameter] public string Placeholder { get; set; }
+  [Parameter] public EventCallback<string> OnTextInput { get; set; }
+  [Parameter] public string Placeholder { get; set; }
 
-    private string TextInput { get; set; }
+  private string TextInput { get; set; }
 
-    private void ChangeTest(ChangeEventArgs args)
-    {
+  private void ChangeTest(ChangeEventArgs args)
+  {
 
-        TextInput = args.Value.ToString();
-        OnTextInput.InvokeAsync(TextInput);
-        Console.WriteLine(TextInput);
-    }
+    TextInput = args.Value.ToString();
+    OnTextInput.InvokeAsync(TextInput);
+    Console.WriteLine(TextInput);
+  }
 
 }

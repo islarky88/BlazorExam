@@ -2,7 +2,7 @@
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Components.Web
 
-@inject IJSRuntime jsRuntime
+@inject IJSRuntime JsRuntime
 
 <h3>Saved Items from: @Source</h3>
 
@@ -17,7 +17,7 @@
     <tbody>
         @foreach (var Item in ApiData)
         {
-            <tr class="pointer">
+            <tr class="pointer" @onclick="@(e => DeleteItem(Item))">
                 <td>@Item.Id</td>
                 <td>@Item.Title</td>
                 <td>@Item.UserId</td>
@@ -28,35 +28,66 @@
 
 @code {
 
-    List<JsonData> ApiData = new List<JsonData>();
+  List<JsonData> ApiData = new List<JsonData>();
 
-    [Parameter] public string Source { get; set; }
+  [Parameter] public string Source { get; set; }
 
-    private async Task FetchSavedData(string Type) 
+  private async Task DeleteItem(JsonData Item)
+  {
+
+    try
     {
-    
-        var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", Type);
+      var ApiType = ApiService.MyApiUrls.First(Item => Item.url == Source).name;
+      Console.WriteLine("asdasd {0}", ApiType);
+      await JsRuntime.InvokeVoidAsync("DeleteSavedItems", ApiType, Item);
 
-        Console.WriteLine(Response);
-
-        ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
-
-        Console.WriteLine(ApiData);
-
-
-        Console.WriteLine("hello from list mounted");
-        StateHasChanged();
-    
-    } 
-
-    protected override async Task OnAfterRenderAsync(bool FirstRender)
+    }
+    catch (Exception exception)
     {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
 
+  }
+  private async Task FetchSavedData(string Type) 
+  {
+
+    try
+    {
+      var Response = await JsRuntime.InvokeAsync<string>("FetchSavedItems", Type);
+
+      Console.WriteLine(Response);
+
+      ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
+
+      Console.WriteLine(ApiData);
+
+      Console.WriteLine("hello from list mounted");
+      StateHasChanged();
+    }
+    catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+      
+  } 
+
+  protected override async Task OnAfterRenderAsync(bool FirstRender)
+  {
+    try
+    {
       if (FirstRender)
       {
-
-        await FetchSavedData(Source);
-
+        await FetchSavedData("Albums");
       }
+        
     }
+    catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+
+  }
 }    
