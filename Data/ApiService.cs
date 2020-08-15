@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace BlazorExam.Data
@@ -19,13 +20,22 @@ namespace BlazorExam.Data
   
   public class JsonData
   {
+
+    [JsonProperty("id")]
     public int Id { get; set; }
+
+    [JsonProperty("title")]
     public string Title { get; set; }
+
+    [JsonProperty("userId")]
     public int UserId { get; set; }
+    [JsonProperty("body")]
     public string Body { get; set; }
+    [JsonProperty("completed")]
     public bool Completed { get; set; }
+    
   }
- 
+
 
   public class ApiService
   {
