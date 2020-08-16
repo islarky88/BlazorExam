@@ -7,7 +7,7 @@
 @inject IJSRuntime JsRuntime
 
 <div class="row">
-  <div class="col-12 col-sm-6 d-flex flex-column">
+  <div class="col-12 col-sm-4 d-flex flex-column">
     <h4>Step 1. Choose Source</h4>
     @foreach (var Item in MyApiUrls)
     {
@@ -17,9 +17,9 @@
     </div>
     }
   </div>
-  <div class="col-12 col-sm-6">
+  <div class="col-12 col-sm-8">
     <h4>Step 2. Type Query</h4>
-    <TextField Placeholder="@PlaceholderText" OnTextInput="TextInputHandler" />
+    <TextField Placeholder="@PlaceholderText" OnSearchClick="@SearchHandler" OnTextInput="@TextInputHandler" IsDisabled="@IsDisabled"/>
   </div>
 </div>
 
@@ -68,11 +68,13 @@
 
   private bool Loading = false;
 
-  private string PlaceholderText = "Search query...";
-  
-  List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
+  private bool IsDisabled = true;
 
-  List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
+  private string PlaceholderText = "Search query...";
+
+  private List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
+
+  private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
   private async Task SaveItem(Dictionary<string, string> Item)
   {
@@ -93,13 +95,32 @@
   private void RadioSelection(ChangeEventArgs Args)
   {
     RadioValue = Args.Value.ToString();
+    IsDisabled = false;
   }
 
-  private async Task TextInputHandler(string newMessage)
+  private void TextInputHandler(string newMessage)
   {
     try
     {
+      
+      Console.WriteLine("TextInputHandler: {0}", newMessage);
 
+    }
+      catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+
+
+  }
+
+ private async Task SearchHandler(string newMessage)
+  {
+    try
+    {
+      
+      Console.WriteLine("SearchHandler: {0}", newMessage);
       Loading = true;
 
       await Task.Run(()=> FetchData());  //<--here!
@@ -137,4 +158,5 @@
 
 
   }
+
 }    
