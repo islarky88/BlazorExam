@@ -1,0 +1,21 @@
+ string json = JsonConvert.SerializeObject(ApiData, Formatting.Indented);
+
+    Console.WriteLine(json);
+
+    
+
+    foreach(Dictionary<string, string> item in ApiData) {
+
+          Console.WriteLine("Id: {0}",  item["id"]);  
+   
+    }
+
+
+
+    foreach(var item in ApiData.First().Keys)
+    {
+        Console.WriteLine("Keeeeey: {0}",  item);  
+    }
+
+      Console.WriteLine(ApiData.First());
+

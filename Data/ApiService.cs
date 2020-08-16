@@ -33,7 +33,7 @@ namespace BlazorExam.Data
     public string Body { get; set; }
     [JsonProperty("completed")]
     public bool Completed { get; set; }
-    
+
   }
 
 
@@ -41,11 +41,13 @@ namespace BlazorExam.Data
   {
     public static List<ApiUrls> MyApiUrls = new List<ApiUrls>
     {
+      new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
+      new ApiUrls{name = "Comments", url = "https://jsonplaceholder.typicode.com/comments"},
+      new ApiUrls{name = "Photos", url = "https://jsonplaceholder.typicode.com/photos"},
       new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
       new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
-      new ApiUrls{name = "Posts", url = "https://jsonplaceholder.typicode.com/posts"},
+      new ApiUrls{name = "Users", url = "https://jsonplaceholder.typicode.com/users"},
     };
-   
     public static async Task<string> GetDataFromUrl(string url)
     {
       //Define your base url

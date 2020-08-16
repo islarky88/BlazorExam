@@ -28,12 +28,22 @@
 else if (Type == "Albums") 
 {
   <SavedItems Source="Albums"/>
-
+}
+else if (Type == "Photos") 
+{
+  <SavedItems Source="Photos"/>
+}
+else if (Type == "Comments") 
+{
+  <SavedItems Source="Comments"/>
+}
+else if (Type == "Users") 
+{
+  <SavedItems Source="Users"/>
 }
 else if (Type == "Posts") 
 {
   <SavedItems Source="Posts"/>
-
 } else {
   <div class="jumbotron jumbotron-fluid">
   <div class="container">
@@ -47,46 +57,12 @@ else if (Type == "Posts")
 @code {
 
   private string Type;
-  private List<JsonData> ApiData = new List<JsonData>();
 
   private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-  
   private void ChangeSource(ChangeEventArgs Args)
   {
     Type = Args.Value.ToString();
   }
 
-  private async Task FetchSavedData(string Type) 
-  {
-    try
-    {
-      var Response = await jsRuntime.InvokeAsync<string>("FetchSavedItems", "Todos");
-
-      Console.WriteLine(Response);
-
-      ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
-
-      Console.WriteLine(ApiData);
-
-      Console.WriteLine("hello from list mounted");
-      StateHasChanged();
-    }
-    catch (Exception exception)
-    {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
-    }
-
-    
-  } 
-
-  protected override async Task OnAfterRenderAsync(bool FirstRender)
-  {
-
-    if (FirstRender)
-    {
-      await FetchSavedData("Todos");
-    }
-  }
 }

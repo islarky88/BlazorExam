@@ -31,37 +31,42 @@
 </div>
 }
 
+@if (ApiData.Count > 0) {
 <table class="table">
   <thead>
-      <tr>
-        <th>Id</th>
-        <th>Title</th>
-      </tr>
+    <tr>
+    @foreach(var Item in ApiData.First().Keys)
+    {
+      <th>@Item</th>
+    }
+    </tr>
   </thead>
   <tbody>
     @foreach (var Item in ApiData)
     {
       <tr class="pointer" @onclick="@(e => SaveItem(Item))">
-        <td>@Item.Id</td>
-        <td>@Item.Title</td>
+
+        @foreach(var Val in Item.Values)
+        {
+          <td>@Val</td>
+        }
       </tr>
     }
   </tbody>
 </table>
+}
 
 @code {
 
-  List<JsonData> ApiData = new List<JsonData>();
   private string RadioValue;
 
   private string PlaceholderText = "Search query...";
-
   
+  List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
 
   List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-
-  private async Task SaveItem(JsonData Item)
+  private async Task SaveItem(Dictionary<string, string> Item)
   {
     try
     {
@@ -80,27 +85,52 @@
   private async Task RadioSelection(ChangeEventArgs Args)
   {
 
-    RadioValue = Args.Value.ToString();
+    try
+    {
+      RadioValue = Args.Value.ToString();
 
-    await FetchData();
+      await FetchData();
+    }
+      catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
 
   }
 
   private async Task TextInputHandler(string newMessage)
   {
+    try
+    {
+      await FetchData();
+    }
+      catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
 
-    await FetchData();
 
   }
 
   private async Task FetchData()
   {
+    try
+    {
+      if (RadioValue == null) return;
 
-    if (RadioValue == null) return;
+      var Response = await ApiService.GetDataFromUrl(RadioValue);
+      @* ApiData = JsonConvert.DeserializeObject<List<JsonData>>(response); *@
+      ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
+      StateHasChanged();
+    }
+      catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
 
-    var response = await ApiService.GetDataFromUrl(RadioValue);
-    ApiData = JsonConvert.DeserializeObject<List<JsonData>>(response);
-    StateHasChanged();
 
   }
 }    

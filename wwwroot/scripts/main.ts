@@ -20,7 +20,7 @@ window['FetchSavedItems'] = (type) => {
 }
 
 window['DeleteSavedItem'] = (type: string, item: JsonData) => {
-
+  console.log("DeleteSavedItem", type, item);
   let data: JsonData[] = [];
   console.log('delete item', type, item);
   // cgeck if there is already and entry

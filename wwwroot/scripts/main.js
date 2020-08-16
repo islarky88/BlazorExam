@@ -14,6 +14,7 @@ window['FetchSavedItems'] = (type) => {
     return JSON.stringify(data);
 };
 window['DeleteSavedItem'] = (type, item) => {
+    console.log("DeleteSavedItem", type, item);
     let data = [];
     console.log('delete item', type, item);
     // cgeck if there is already and entry

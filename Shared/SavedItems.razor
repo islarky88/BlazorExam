@@ -9,33 +9,47 @@
 
 <h5 class="mt-3 mb-3">Click on an item to remove it from from local storage</h5>
 
+@if (ApiData.Count > 0) {
 <table class="table">
   <thead>
     <tr>
-      <th>Id</th>
-      <th>Title</th>
+    @foreach(var Item in ApiData.First().Keys)
+    {
+      <th>@Item</th>
+    }
     </tr>
   </thead>
   <tbody>
     @foreach (var Item in ApiData)
     {
       <tr class="pointer" @onclick="@(e => DeleteItem(Item))">
-        <td>@Item.Id</td>
-        <td>@Item.Title</td>
+
+        @foreach(var Val in Item.Values)
+        {
+          <td>@Val</td>
+        }
       </tr>
     }
   </tbody>
 </table>
+} else {
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">No Items Saved</h1>
+    </div>
+  </div>
+}
+
 
 @code {
 
   [Parameter] public string Source { get; set; }
 
-  List<JsonData> ApiData = new List<JsonData>();
+  List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
 
   List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-  private async Task DeleteItem(JsonData Item)
+  private async Task DeleteItem(Dictionary<string, string> Item)
   {
 
     try
@@ -59,14 +73,14 @@
     {
       var Response = await JsRuntime.InvokeAsync<string>("FetchSavedItems", Type);
 
-      Console.WriteLine(Response);
+      @* Console.WriteLine(Response); *@
 
-      ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response);
+      @* ApiData = JsonConvert.DeserializeObject<List<JsonData>>(Response); *@
 
-      Console.WriteLine(ApiData);
-
-      Console.WriteLine("hello from list mounted");
+      ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
+      
       StateHasChanged();
+
     }
     catch (Exception exception)
     {
