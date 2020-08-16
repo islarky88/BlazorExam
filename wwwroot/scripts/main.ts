@@ -28,7 +28,7 @@ window['DeleteSavedItem'] = (type: string, item: JsonData) => {
     console.log('delete item found');
     data = JSON.parse(localStorage.getItem(type));
 
-    data = data.filter(i => i.id !== item.id);
+    data = data.filter(i => +i.id !== +item.id);
 
   }
 
@@ -46,7 +46,7 @@ window['SaveToLocalStorage'] = (type: string, item: JsonData) => {
     data = JSON.parse(localStorage.getItem(type));
   }
   
-  const index = data.findIndex(i => i.id === item.id);
+  const index = data.findIndex(i => +i.id === +item.id);
 
   // show alert if already saved
   if (index >= 0) {
