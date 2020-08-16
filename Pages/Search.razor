@@ -6,15 +6,9 @@
 
 @inject IJSRuntime JsRuntime
 
-
-<h1>Search</h1>
-
-
 <div class="row">
-  <div class="col-12 col-sm-6">
-    <TextField Placeholder="@PlaceholderText" OnTextInput="TextInputHandler" />
-  </div>
   <div class="col-12 col-sm-6 d-flex flex-column">
+    <h4>Step 1. Choose Source</h4>
     @foreach (var Item in MyApiUrls)
     {
     <div class="mr-4">
@@ -22,6 +16,10 @@
       <label class="pointer" for="@Item.name">@Item.name</label>
     </div>
     }
+  </div>
+  <div class="col-12 col-sm-6">
+    <h4>Step 2. Type Query</h4>
+    <TextField Placeholder="@PlaceholderText" OnTextInput="TextInputHandler" />
   </div>
 </div>
 
@@ -31,7 +29,15 @@
 </div>
 }
 
-@if (ApiData.Count > 0) {
+@if (Loading == true) {
+
+<div class="container text-center mt-5">
+  <div class="spinner-border spinner-border-lg" style="width: 100px; height: 100px;" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+} else if (ApiData.Count > 0) {
 <table class="table">
   <thead>
     <tr>
@@ -60,6 +66,8 @@
 
   private string RadioValue;
 
+  private bool Loading = false;
+
   private string PlaceholderText = "Search query...";
   
   List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
@@ -82,28 +90,24 @@
 
   }
 
-  private async Task RadioSelection(ChangeEventArgs Args)
+  private void RadioSelection(ChangeEventArgs Args)
   {
-
-    try
-    {
-      RadioValue = Args.Value.ToString();
-
-      await FetchData();
-    }
-      catch (Exception exception)
-    {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
-    }
-
+    RadioValue = Args.Value.ToString();
   }
 
   private async Task TextInputHandler(string newMessage)
   {
     try
     {
-      await FetchData();
+
+      Loading = true;
+
+      await Task.Run(()=> FetchData());  //<--here!
+
+      Loading = false;
+      
+      StateHasChanged();
+
     }
       catch (Exception exception)
     {
@@ -123,7 +127,7 @@
       var Response = await ApiService.GetDataFromUrl(RadioValue);
       @* ApiData = JsonConvert.DeserializeObject<List<JsonData>>(response); *@
       ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
-      StateHasChanged();
+
     }
       catch (Exception exception)
     {

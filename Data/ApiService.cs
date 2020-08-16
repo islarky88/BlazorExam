@@ -46,7 +46,7 @@ namespace BlazorExam.Data
       new ApiUrls{name = "Photos", url = "https://jsonplaceholder.typicode.com/photos"},
       new ApiUrls{name = "Albums", url = "https://jsonplaceholder.typicode.com/albums"},
       new ApiUrls{name = "Todos", url = "https://jsonplaceholder.typicode.com/todos"},
-      new ApiUrls{name = "Users", url = "https://jsonplaceholder.typicode.com/users"},
+      // new ApiUrls{name = "Users", url = "https://jsonplaceholder.typicode.com/users"},
     };
     public static async Task<string> GetDataFromUrl(string url)
     {
