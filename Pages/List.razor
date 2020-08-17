@@ -3,7 +3,7 @@
 @using BlazorExam.Data
 @using Newtonsoft.Json
 
-@inject IJSRuntime jsRuntime
+@inject IJSRuntime JsRuntime
 
 
 <h1>Saved Items</h1>
@@ -18,39 +18,20 @@
 }
 </div>
 
+@if (Type != null && ApiData.Count > 0)
+{
 
+  <SavedItems Data="@ApiData" DeleteItem="@DeleteItemHandler"/>
 
-@* dili jud ni angay. sayup jud ni pero kani lng sa. ma refactor ra ni later *@
-@if (Type == "Todos")
-{
-  <SavedItems Source="Todos"/>
-}
-else if (Type == "Albums") 
-{
-  <SavedItems Source="Albums"/>
-}
-else if (Type == "Photos") 
-{
-  <SavedItems Source="Photos"/>
-}
-else if (Type == "Comments") 
-{
-  <SavedItems Source="Comments"/>
-}
-else if (Type == "Users") 
-{
-  <SavedItems Source="Users"/>
-}
-else if (Type == "Posts") 
-{
-  <SavedItems Source="Posts"/>
 } else {
+
   <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">Please Select Source</h1>
-    <p class="lead">You will then see the list of items saved by source.</p>
+    <div class="container">
+      <h1 class="display-4">Please Select Source</h1>
+      <p class="lead">You will then see the list of items saved by source.</p>
+    </div>
   </div>
-</div>
+
 }
 
 
@@ -58,11 +39,53 @@ else if (Type == "Posts")
 
   private string Type;
 
+  private List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
+
   private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-  private void ChangeSource(ChangeEventArgs Args)
+    
+  private async Task DeleteItemHandler(string ItemId)
+  {
+
+    try
+    {
+      await JsRuntime.InvokeVoidAsync("DeleteSavedItem", Type, ItemId);
+
+      await FetchSavedData();
+
+    }
+    catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+
+  }
+  private async Task ChangeSource(ChangeEventArgs Args)
   {
     Type = Args.Value.ToString();
+    await FetchSavedData();
   }
+
+  private async Task FetchSavedData() 
+  {
+
+    try
+    {
+      var Response = await JsRuntime.InvokeAsync<string>("FetchSavedItems", Type);
+
+
+      ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
+      
+      StateHasChanged();
+
+    }
+    catch (Exception exception)
+    {
+      Console.WriteLine("Exception Hit------------");
+      Console.WriteLine(exception);
+    }
+      
+  } 
 
 }

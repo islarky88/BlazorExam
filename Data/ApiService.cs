@@ -89,6 +89,7 @@ namespace BlazorExam.Data
         return "test response";
       }
     }
+    
     public static async void GetPokemon()
     {
       //Define your baseUrl
