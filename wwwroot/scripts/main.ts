@@ -19,16 +19,16 @@ function FetchSavedItems(type: string) {
   return JSON.stringify(data)
 }
 
-function DeleteSavedItem(type: string, item: JsonData) {
-  console.log("DeleteSavedItem", type, item);
+function DeleteSavedItem(type: string, itemId: number) {
+  console.log("DeleteSavedItem", type, itemId);
   let data: JsonData[] = [];
-  console.log('delete item', type, item);
+  console.log('delete itemId', type, itemId);
   // cgeck if there is already and entry
   if (localStorage.getItem(type)) {
     console.log('delete item found');
     data = JSON.parse(localStorage.getItem(type));
 
-    data = data.filter(i => +i.id !== +item.id);
+    data = data.filter(i => +i.id !== +itemId);
 
   }
 

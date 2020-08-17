@@ -22,7 +22,7 @@
     <tbody>
       @foreach (var Item in Data)
       {
-        <tr class="pointer" @onclick="@(e => Delete(Item.Values.First()))">
+        <tr class="pointer" @onclick="@(e => Delete(Item["id"]))">
 
           @foreach(var Val in Item.Values)
           {
