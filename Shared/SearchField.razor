@@ -1,0 +1,41 @@
+
+
+<div>
+  <div class="d-flex">
+    <div class="form-group">
+      <input autocomplete="off" id="search" class="form-control" placeholder="@Placeholder" disabled="@IsDisabled" type="text" @bind-value="InputText" @bind-value:event="oninput" @onkeyup="@HandleKeyUp">
+    </div>
+    <div>
+      <button class="btn btn-primary ml-2" @onclick="EmitSearch" disabled="@(InputText.Length == 0)">Search</button>
+    </div>
+  </div>
+  <div>Input: @InputText</div>
+</div>
+
+
+@code {
+
+  [Parameter] public EventCallback<string> OnTextInput { get; set; }
+  [Parameter] public EventCallback<string> OnSearchClick { get; set; }
+  [Parameter] public EventCallback<string> OnInputChange { get; set; }
+  [Parameter] public string Placeholder { get; set; }
+  [Parameter] public bool IsDisabled { get; set; }
+
+  private string InputText = "";
+
+  public void ChangeInput(string message)
+  {
+    InputText = message;
+  }
+
+  private void EmitSearch()
+  {
+    OnSearchClick.InvokeAsync(InputText);
+  }
+  private void HandleKeyUp()
+  {
+    OnTextInput.InvokeAsync(InputText);
+  }
+
+
+}

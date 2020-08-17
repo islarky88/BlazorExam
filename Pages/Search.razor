@@ -2,7 +2,8 @@
 
 @using BlazorExam.Data
 @using Newtonsoft.Json
-@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components
+@using System.Timers;
 
 @inject IJSRuntime JsRuntime
 
@@ -19,7 +20,28 @@
   </div>
   <div class="col-12 col-sm-8">
     <h4>Step 2. Type Query</h4>
-    <TextField Placeholder="@PlaceholderText" OnSearchClick="@SearchHandler" OnTextInput="@TextInputHandler" IsDisabled="@IsDisabled"/>
+    <div style="position: relative;">
+      <SearchField Placeholder="@PlaceholderText" OnSearchClick="@SearchHandler" OnTextInput="@TextInputHandler" IsDisabled="@IsDisabled" @ref="search"/>
+
+      @if (ShowSuggestions == true) {
+        <div class="list-group" style="position: absolute; top: 37px; width: 300px;">
+          @foreach (var Item in Suggestions.Take(10))
+          {
+          // filters the items if matches with title or body
+              @if (Item.ContainsKey("title"))
+              {
+                <div class="list-group-item list-group-item-action pointer" @onclick="@(e => SetTextInput(Item["title"]))">@Item["title"]</div>
+              } 
+              else if (Item.ContainsKey("body")) 
+              {
+                <div class="list-group-item list-group-item-action pointer" @onclick="@(e => SetTextInput(Item["body"]))">@Item["title"]</div>
+              }
+
+          }
+        </div>
+      }
+    </div>
+
   </div>
 </div>
 
@@ -45,14 +67,24 @@
 
 @code {
 
+  private SearchField search;
+
   private string RadioValue;
 
   private bool Loading = false;
 
   private bool IsDisabled = true;
 
+  private bool ShowSuggestions = false;
+
   private string PlaceholderText = "Search query...";
 
+  private Timer inputTimer;
+
+  private string InputText;
+
+  private List<Dictionary<string, string>> Suggestions = new List<Dictionary<string, string>>();
+  
   private List<Dictionary<string, string>> ApiData = new List<Dictionary<string, string>>();
 
   private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
@@ -69,20 +101,37 @@
       Console.WriteLine("Exception Hit: {0}", Exception);
     }
 
+
   }
 
+  
   private void RadioSelection(ChangeEventArgs Args)
   {
     RadioValue = Args.Value.ToString();
     IsDisabled = false;
   }
 
+  private void SetTextInput(string Input)
+  {
+    InputText = Input;
+    ShowSuggestions = false;
+    search.ChangeInput(Input);
+    StateHasChanged();
+
+  }
+
   private void TextInputHandler(string newMessage)
   {
     try
     {
-      
-      Console.WriteLine("Show Suggestions for: {0}", newMessage);
+      InputText = newMessage;
+
+      // remove previous one
+      inputTimer.Stop();
+
+      // new timer
+      inputTimer.Start();  
+        
 
     }
       catch (Exception Exception)
@@ -93,10 +142,12 @@
 
   }
 
- private async Task SearchHandler(string newMessage)
+  private async Task SearchHandler(string newMessage)
   {
     try
     {
+
+      ShowSuggestions = false;
       
       Console.WriteLine("SearchHandler: {0}", newMessage);
       Loading = true;
@@ -126,6 +177,26 @@
       @* ApiData = JsonConvert.DeserializeObject<List<JsonData>>(response); *@
       ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
 
+      List<Dictionary<string, string>> Filtered = new List<Dictionary<string, string>>();
+
+      foreach (Dictionary<string, string> Item in ApiData)
+      {
+
+          // filters the items if matches with title or body
+          if (Item.ContainsKey("title") && Item["title"].Contains(InputText))
+          {
+            Filtered.Add(Item);
+          } 
+          else if (Item.ContainsKey("body") && Item["body"].Contains(InputText)) 
+          {
+            Filtered.Add(Item);
+          }
+
+      }
+
+      ApiData = Filtered;
+
+
     }
       catch (Exception Exception)
     {
@@ -133,6 +204,65 @@
     }
 
 
+  }
+
+  private async Task ShowSuggestionsPopup()
+  {
+    try
+    {
+      if (RadioValue == null) return;
+
+      var Response = await ApiService.GetDataFromUrl(RadioValue);
+
+      Suggestions = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
+
+      List<Dictionary<string, string>> Filtered = new List<Dictionary<string, string>>();
+
+      foreach (Dictionary<string, string> Item in Suggestions)
+      {
+
+          // filters the items if matches with title or body
+          if (Item.ContainsKey("title") && Item["title"].Contains(InputText))
+          {
+            Filtered.Add(Item);
+          } 
+          else if (Item.ContainsKey("body") && Item["body"].Contains(InputText)) 
+          {
+            Filtered.Add(Item);
+          }
+
+      }
+
+      Suggestions = Filtered;
+      
+      ShowSuggestions = true;
+      StateHasChanged();
+
+    }
+      catch (Exception Exception)
+    {
+      Console.WriteLine("Exception Hit: {0}", Exception);
+    }
+
+
+  }
+
+  private void OnUserFinish(Object source, ElapsedEventArgs e)
+  {
+    InvokeAsync(async () =>
+    {
+      await ShowSuggestionsPopup();
+      Console.WriteLine("Show Suggestions for: {0}", InputText);
+    });
+    
+  }
+
+  protected override void OnInitialized()
+  {
+    // 500 ms on input
+    inputTimer = new System.Timers.Timer(500);
+    inputTimer.Elapsed += OnUserFinish;
+    inputTimer.AutoReset = false;
   }
 
 }    
