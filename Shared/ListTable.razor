@@ -22,7 +22,7 @@
     <tbody>
       @foreach (var Item in Data)
       {
-        <tr class="pointer" @onclick="@(e => Delete(Item["id"]))">
+        <tr class="pointer" @onclick="@(e => DoActionOnClick(Item))">
 
           @foreach(var Val in Item.Values)
           {
@@ -44,20 +44,20 @@
 
 @code {
   [Parameter] public List<Dictionary<string, string>> Data { get; set; }
-  [Parameter] public EventCallback<string> DeleteItem { get; set; }
+  [Parameter] public EventCallback<Dictionary<string, string>> DoAction { get; set; }
 
   List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-  private void Delete(string ItemId)
+  private void DoActionOnClick(Dictionary<string, string> Item)
   {
     try
     {
-      DeleteItem.InvokeAsync(ItemId);
+      // wethere to delete or save based on handler of parent
+      DoAction.InvokeAsync(Item);
     }
-    catch (Exception exception)
+    catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
 
   }

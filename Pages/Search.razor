@@ -38,28 +38,9 @@
 </div>
 
 } else if (ApiData.Count > 0) {
-<table class="table">
-  <thead>
-    <tr>
-    @foreach(var Item in ApiData.First().Keys)
-    {
-      <th>@Item</th>
-    }
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var Item in ApiData)
-    {
-      <tr class="pointer" @onclick="@(e => SaveItem(Item))">
 
-        @foreach(var Val in Item.Values)
-        {
-          <td>@Val</td>
-        }
-      </tr>
-    }
-  </tbody>
-</table>
+  <ListTable Data="@ApiData" DoAction="@SaveItemHandler"/>
+
 }
 
 @code {
@@ -76,19 +57,17 @@
 
   private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
-  private async Task SaveItem(Dictionary<string, string> Item)
+  private async Task SaveItemHandler(Dictionary<string, string> Item)
   {
     try
     {
-      var UrlName = MyApiUrls.First(Item => Item.url == RadioValue).name;
+      var UrlName = MyApiUrls.First(UrlItem => UrlItem.url == RadioValue).name;
       await JsRuntime.InvokeVoidAsync("SaveToLocalStorage", UrlName, Item);
     }
-      catch (Exception exception)
+      catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
-
 
   }
 
@@ -106,10 +85,9 @@
       Console.WriteLine("TextInputHandler: {0}", newMessage);
 
     }
-      catch (Exception exception)
+      catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
 
 
@@ -130,10 +108,9 @@
       StateHasChanged();
 
     }
-      catch (Exception exception)
+      catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
 
 
@@ -150,10 +127,9 @@
       ApiData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(Response);
 
     }
-      catch (Exception exception)
+      catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
 
 

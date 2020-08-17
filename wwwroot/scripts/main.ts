@@ -55,8 +55,10 @@ function SaveToLocalStorage(type: string, item: JsonData) {
   }
 
   // finally save to localstorage
+  
   data.push(item);
   localStorage.setItem(type, JSON.stringify(data));
+  alert('Item saved to LocalStorage.')
 
 }
 

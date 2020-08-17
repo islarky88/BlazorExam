@@ -18,10 +18,20 @@
 }
 </div>
 
-@if (Type != null && ApiData.Count > 0)
+@if (Type != null)
 {
+  @if (ApiData.Count > 0) {
 
-  <SavedItems Data="@ApiData" DeleteItem="@DeleteItemHandler"/>
+    <ListTable Data="@ApiData" DoAction="@DeleteItemHandler"/>
+
+  } else {
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">No items for this source saved in LocalStorage</h1>
+      </div>
+    </div>
+  }
+
 
 } else {
 
@@ -44,23 +54,18 @@
   private List<ApiUrls> MyApiUrls = ApiService.MyApiUrls;
 
     
-  private async Task DeleteItemHandler(string ItemId)
+  private async Task DeleteItemHandler(Dictionary<string, string> Item)
   {
 
     try
     {
-      Console.WriteLine("delete item {0}", ItemId);
-      await JsRuntime.InvokeVoidAsync("DeleteSavedItem", Type, Int32.Parse(ItemId));
-
+      await JsRuntime.InvokeVoidAsync("DeleteSavedItem", Type, Int32.Parse(Item["id"]));
       await FetchSavedData();
-
     }
-    catch (Exception exception)
+    catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
-
   }
   
   private async Task ChangeSource(ChangeEventArgs Args)
@@ -82,10 +87,9 @@
       StateHasChanged();
 
     }
-    catch (Exception exception)
+    catch (Exception Exception)
     {
-      Console.WriteLine("Exception Hit------------");
-      Console.WriteLine(exception);
+      Console.WriteLine("Exception Hit: {0}", Exception);
     }
       
   } 
