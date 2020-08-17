@@ -1,14 +1,14 @@
-window['ShowAlert'] = (message) => {
+function ShowAlert(message: string) {
   alert('asdasd' + message);
 }
 
-window['GetHeaders'] = (message) => {
+function GetHeaders(message: string) {
   alert('GetHeaders: ' + message);
   return "GetHeaders Message: " + message;
 }
 
 
-window['FetchSavedItems'] = (type) => {
+function FetchSavedItems(type: string) {
 
   let data: JsonData[] = [];
 
@@ -19,7 +19,7 @@ window['FetchSavedItems'] = (type) => {
   return JSON.stringify(data)
 }
 
-window['DeleteSavedItem'] = (type: string, item: JsonData) => {
+function DeleteSavedItem(type: string, item: JsonData) {
   console.log("DeleteSavedItem", type, item);
   let data: JsonData[] = [];
   console.log('delete item', type, item);
@@ -37,7 +37,7 @@ window['DeleteSavedItem'] = (type: string, item: JsonData) => {
 
 }
 
-window['SaveToLocalStorage'] = (type: string, item: JsonData) => {
+function SaveToLocalStorage(type: string, item: JsonData) {
 
   let data: JsonData[] = [];
 
@@ -45,19 +45,18 @@ window['SaveToLocalStorage'] = (type: string, item: JsonData) => {
   if (localStorage.getItem(type)) {
     data = JSON.parse(localStorage.getItem(type));
   }
-  
+
   const index = data.findIndex(i => +i.id === +item.id);
 
   // show alert if already saved
   if (index >= 0) {
     alert('Item already saved.')
     return;
-  } 
-  
+  }
+
   // finally save to localstorage
   data.push(item);
   localStorage.setItem(type, JSON.stringify(data));
-
 
 }
 
